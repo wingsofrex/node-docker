@@ -31,3 +31,5 @@ InputFields       : {}
 Links             : {}
 ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 36
+
+You can now run this lab on an EC2 instance by configuring Jenkinsfile for a pipeline. Also, for freestyle projects, you can configure the webhooks to your Jenkins environment.
