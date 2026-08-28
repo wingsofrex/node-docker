@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'node-docker-hello'
         CONTAINER_NAME = 'node-docker-hello'
-        APP_PORT = '8000'
+        APP_PORT = '8001'
     }
 
     stages {
