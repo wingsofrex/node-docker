@@ -29,7 +29,7 @@ pipeline {
 
         stage('Verify Application') {
             steps {
-                bat 'timeout /t 5 /nobreak'
+                sleep time: 5, unit: 'SECONDS'
                 bat 'curl -f http://localhost:%APP_PORT%'
             }
         }
