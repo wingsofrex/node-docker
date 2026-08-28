@@ -1,18 +1,48 @@
-environment {
-    IMAGE_NAME = 'node-docker-hello'
-    CONTAINER_NAME = 'node-docker-hello'
-    APP_PORT = '8001'
-}
+pipeline {
+    agent any
 
-stage('Run Container') {
-    steps {
-        bat 'docker run -d --name %CONTAINER_NAME% -p %APP_PORT%:8001 %IMAGE_NAME%:%BUILD_NUMBER%'
+    environment {
+        IMAGE_NAME = 'node-docker-hello'
+        CONTAINER_NAME = 'node-docker-hello'
+        APP_PORT = '8001'
     }
-}
 
-stage('Verify') {
-    steps {
-        bat 'timeout /t 5 /nobreak'
-        bat 'curl -f http://localhost:%APP_PORT%'
+    stages {
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
+            }
+        }
+
+        stage('Stop Existing Container') {
+            steps {
+                bat 'docker rm -f %CONTAINER_NAME% 2>nul || exit /b 0'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                bat 'docker run -d --name %CONTAINER_NAME% -p %APP_PORT%:8001 %IMAGE_NAME%:%BUILD_NUMBER%'
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                bat 'timeout /t 5 /nobreak'
+                bat 'curl -f http://localhost:%APP_PORT%'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Application deployed successfully!'
+            echo 'Application available at http://localhost:8001'
+        }
+
+        failure {
+            echo 'Deployment failed.'
+        }
     }
 }
