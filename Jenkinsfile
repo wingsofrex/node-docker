@@ -1,3 +1,4 @@
+```groovy
 pipeline {
     agent any
 
@@ -8,43 +9,29 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/wingsofrex/node-docker.git'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
+                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
             }
         }
 
         stage('Stop Existing Container') {
             steps {
-                sh '''
-                    docker rm -f ${CONTAINER_NAME} || true
-                '''
+                bat 'docker rm -f %CONTAINER_NAME% 2>nul || exit /b 0'
             }
         }
 
         stage('Run Container') {
             steps {
-                sh '''
-                    docker run -d \
-                      --name ${CONTAINER_NAME} \
-                      -p ${APP_PORT}:8000 \
-                      ${IMAGE_NAME}:${BUILD_NUMBER}
-                '''
+                bat 'docker run -d --name %CONTAINER_NAME% -p %APP_PORT%:8000 %IMAGE_NAME%:%BUILD_NUMBER%'
             }
         }
 
         stage('Verify') {
             steps {
-                sh '''
-                    sleep 5
-                    curl -f http://localhost:${APP_PORT}
-                '''
+                bat 'timeout /t 5 /nobreak'
+                bat 'curl -f http://localhost:%APP_PORT%'
             }
         }
     }
@@ -59,3 +46,4 @@ pipeline {
         }
     }
 }
+```
