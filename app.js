@@ -2,7 +2,7 @@
 const http = require('http');
 
 // Define server port
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 // Create a basic HTTP server
 const server = http.createServer((req, res) => {
