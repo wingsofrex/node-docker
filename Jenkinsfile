@@ -23,11 +23,11 @@ pipeline {
 
         stage('Run Container') {
             steps {
-                bat 'docker run -d --name %CONTAINER_NAME% -p %APP_PORT%:8001 %IMAGE_NAME%:%BUILD_NUMBER%'
+                bat 'docker run -d --name %CONTAINER_NAME% -p %APP_PORT%:%APP_PORT% %IMAGE_NAME%:%BUILD_NUMBER%'
             }
         }
 
-        stage('Verify') {
+        stage('Verify Application') {
             steps {
                 bat 'timeout /t 5 /nobreak'
                 bat 'curl -f http://localhost:%APP_PORT%'
@@ -37,12 +37,16 @@ pipeline {
 
     post {
         success {
-            echo 'Application deployed successfully!'
-            echo 'Application available at http://localhost:8001'
+            echo '========================================'
+            echo 'Deployment successful!'
+            echo 'Application: http://localhost:8001'
+            echo '========================================'
         }
 
         failure {
-            echo 'Deployment failed.'
+            echo '========================================'
+            echo 'Deployment failed!'
+            echo '========================================'
         }
     }
 }
